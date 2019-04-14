@@ -2,13 +2,13 @@
 #include "ui_mainwindow.h"
 #include <QKeyEvent>
 #include "persontreewidgetitem.h"
-#include "personobj.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     personenListe_(Person::randomPersonList(15))
 {
+    setStyleSheet("QTreeWidget{  selection-background-color: #409090ff }");
     ui->setupUi(this);
     fillLeftList();
     ui->twLinks->installEventFilter(this);
@@ -43,34 +43,38 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 void MainWindow::fillLeftList()
 {
     // Header links
-    QTreeWidgetItem *header = new QTreeWidgetItem;
-    header->setText(0, "Lebensnummer");
-    header->setText(1, "Zuname");
-    header->setText(2, "Vorname");
-    header->setText(3, "Geburtsdatum");
+    PersonTreeWidgetItem *header = PersonTreeWidgetItem::headerItem();
     ui->twLinks->setHeaderItem(header);
     // Header rechts
-    header = new QTreeWidgetItem;
-    header->setText(0, QString("Lebensnummer"));
+    header = new PersonTreeWidgetItem;
+    header->setText(0, QString("Id"));
     header->setText(1, QString("Auftragsnummer"));
-    header->setText(2, QString("eGK Nummer"));
+    header->setText(2, QString("V Nummer"));
     ui->twRechts->setHeaderItem(header);
 
-    QString format("dd.MM.yyyy");
     for(const Person &person : personenListe_)
     {
-        QTreeWidgetItem *item = new QTreeWidgetItem;
-        item->setData(0, Qt::DisplayRole, person.lebensnummer());
-        item->setData(1, Qt::DisplayRole, person.zuname());
-        item->setData(2, Qt::DisplayRole, person.vorname());
-        item->setData(3, Qt::DisplayRole, person.geburtsdatum());
+        PersonTreeWidgetItem *item = new PersonTreeWidgetItem(person);
         ui->twLinks->addTopLevelItem(item);
     }
+}
+
+void MainWindow::changeItemSelection() const
+{
+    for (int index=0; index<ui->twLinks->topLevelItemCount(); ++index)
+    {
+        PersonTreeWidgetItem *item = dynamic_cast<PersonTreeWidgetItem*>( ui->twLinks->topLevelItem(index) );
+        if (item->isMarked())
+            item->setSelectionMark(false);
+    }
+    PersonTreeWidgetItem *item = dynamic_cast<PersonTreeWidgetItem*>( ui->twLinks->currentItem() );
+    item->setSelectionMark(true);
 }
 
 //! Eintrag in rechter Liste machen.
 void MainWindow::eintragInRechteListe()
 {
+    changeItemSelection();
     int current = ui->twLinks->selectionModel()->currentIndex().row();
     const Person &p = personenListe_[current];
     QTreeWidgetItem *item = new QTreeWidgetItem;

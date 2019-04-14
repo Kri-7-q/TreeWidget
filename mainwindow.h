@@ -23,6 +23,7 @@ public slots:
 
 protected:
     void fillLeftList();
+    void changeItemSelection() const;
 
 private:
     Ui::MainWindow *ui;

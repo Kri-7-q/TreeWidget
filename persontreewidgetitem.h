@@ -3,17 +3,21 @@
 
 #include <QTreeWidgetItem>
 
-class PersonObj;
+class Person;
 
 class PersonTreeWidgetItem : public QTreeWidgetItem
 {
 public:
-    PersonTreeWidgetItem(const PersonObj &p);
+    PersonTreeWidgetItem();
+    PersonTreeWidgetItem(const Person &p);
+
+    void setSelectionMark(const bool isMarked = true);
+    bool isMarked() const       { return m_isSelected; }
 
     static PersonTreeWidgetItem* headerItem();
 
 private:
-    PersonTreeWidgetItem() {}
+    bool m_isSelected = false;
 };
 
 #endif // PERSONTREEWIDGETITEM_H
