@@ -27,7 +27,6 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-    QList<Person> personenListe_;
 };
 
 #endif // MAINWINDOW_H

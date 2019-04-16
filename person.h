@@ -8,7 +8,7 @@ class Person
 {
 public:
     Person() : lebensnummer_(0) {}
-    Person(const QString &name, const QString &zuname, const QDate &geburtsdatum, const unsigned lebensnummer);
+    Person(const QString &name, const QString &zuname, const QDate &geburtsdatum, const unsigned lebensnummer, const QString &egk, const QString &auftrag, const unsigned index);
 
     const QString& vorname() const { return vorname_; }
     void setVorname(const QString &vorname) { vorname_ = vorname; }
@@ -18,23 +18,28 @@ public:
     void setGeburtsdatum(const QDate &date) { geburtsdatum_ = date; }
     unsigned lebensnummer() const { return lebensnummer_; }
     void setLebensnummer(const unsigned lebensnummer) { lebensnummer_ = lebensnummer; }
+    QString egk() const { return egk_; }
+    void setEgk(const QString &egk) { egk_ = egk; }
+    QString auftragsNr() const { return auftragsNr_; }
+    void setAuftragsNr(const QString &auftragsNr) { auftragsNr_ = auftragsNr; }
+    unsigned index() const { return index_; }
+    void setIndex(const unsigned index) { index_ = index; }
 
     static Person randomPerson();
     static QList<Person> randomPersonList(const unsigned anzahl);
-    static unsigned randomAuftragNummer();
+    static QString randomAuftragNummer();
     static QString RandomEgkNummer();
-
-    static QStringList header();
-    static void setHeader(const QStringList &header);
 
 private:
     QString vorname_;
     QString zuname_;
     QDate geburtsdatum_;
     unsigned lebensnummer_ = 0;
+    QString egk_;
+    QString auftragsNr_;
+    unsigned index_;
     static QStringList vornameListe_;
     static QStringList zunameListe_;
-    static QStringList m_header;
 };
 
 #endif // PERSON_H

@@ -5,14 +5,17 @@ QStringList Person::vornameListe_ = QStringList() << "Horst" << "Martin" << "Kla
                                                   << "Thomas" << "Julia" << "Sabine" << "Tanja" << "Simone";
 QStringList Person::zunameListe_ = QStringList() << "Meier" << "Hunz" << "Kunz" << "Siedler" << "Gibbs"
                                                  << "Ermann" << "Lunz" << "Hinterhuber" << "Wernersen";
-QStringList Person::m_header = QStringList() << "Vorname" << "Zuanme" << "Lebensnummer" << "Geburtsdatum";
 
 //! Konstruktor
-Person::Person(const QString &name, const QString &zuname, const QDate &geburtsdatum, const unsigned lebensnummer)
+Person::Person(const QString &name, const QString &zuname, const QDate &geburtsdatum, const unsigned lebensnummer,
+               const QString &egk, const QString &auftrag, const unsigned index)
     : vorname_(name)
     , zuname_(zuname)
     , geburtsdatum_(geburtsdatum)
     , lebensnummer_(lebensnummer)
+    , egk_(egk)
+    , auftragsNr_(auftrag)
+    , index_(index)
 {
 
 }
@@ -29,8 +32,11 @@ Person Person::randomPerson()
     int jahr = rnd.generate() % 128 + 1890;
     QDate date(jahr, monat, tag);
     int lebensnummer = rnd.generate() % 1000;
+    QString egk = RandomEgkNummer();
+    QString auftrag = randomAuftragNummer();
+    unsigned index = QRandomGenerator::global()->generate() % 100;
 
-    return Person(vornameListe_[indexVorname], zunameListe_[indexZuname], date, lebensnummer);
+    return Person(vornameListe_[indexVorname], zunameListe_[indexZuname], date, lebensnummer, egk, auftrag, index);
 }
 
 //! Erzeugt eine Liste mit Personen per Zufallsgenerator.
@@ -46,9 +52,13 @@ QList<Person> Person::randomPersonList(const unsigned anzahl)
 }
 
 //! Zufaellige Auftragsnummer.
-unsigned Person::randomAuftragNummer()
+QString Person::randomAuftragNummer()
 {
-    return QRandomGenerator::global()->generate() % 6000;
+    QDate heute = QDate::currentDate();
+    QString auftrag = heute.addDays(-QRandomGenerator::global()->generate() % 365).toString("dd.MM.yy / ");
+    auftrag += QString::number(QRandomGenerator::global()->generate() % 600);
+
+    return auftrag;
 }
 
 //! Zufaellige eGK.
@@ -62,14 +72,4 @@ QString Person::RandomEgkNummer()
     }
 
     return egk;
-}
-
-QStringList Person::header()
-{
-    return m_header;
-}
-
-void Person::setHeader(const QStringList &header)
-{
-    m_header = header;
 }

@@ -27,12 +27,14 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     person.cpp \
-    persontreewidgetitem.cpp
+    persontreewidgetitem.cpp \
+    treewidgetitemfactory.cpp
 
 HEADERS += \
         mainwindow.h \
     person.h \
-    persontreewidgetitem.h
+    persontreewidgetitem.h \
+    treewidgetitemfactory.h
 
 FORMS += \
         mainwindow.ui

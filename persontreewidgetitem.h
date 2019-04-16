@@ -9,15 +9,21 @@ class PersonTreeWidgetItem : public QTreeWidgetItem
 {
 public:
     PersonTreeWidgetItem();
-    PersonTreeWidgetItem(const Person &p);
+    PersonTreeWidgetItem(const int index);
 
     void setSelectionMark(const bool isMarked = true);
     bool isMarked() const       { return m_isSelected; }
 
-    static PersonTreeWidgetItem* headerItem();
+    static PersonTreeWidgetItem* headerItem(const QStringList &nameList);
+    static QList<Person> model();
+    static void setModel(const QList<Person> &model);
+    int modelindex() const;
+    void setModelindex(const int modelindex);
 
 private:
     bool m_isSelected = false;
+    int modelindex_ = 0;
+    static QList<Person> model_;
 };
 
 #endif // PERSONTREEWIDGETITEM_H

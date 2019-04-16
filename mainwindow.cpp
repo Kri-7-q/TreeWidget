@@ -2,11 +2,11 @@
 #include "ui_mainwindow.h"
 #include <QKeyEvent>
 #include "persontreewidgetitem.h"
+#include "treewidgetitemfactory.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    personenListe_(Person::randomPersonList(15))
+    ui(new Ui::MainWindow)
 {
     setStyleSheet("QTreeWidget{  selection-background-color: #409090ff }");
     ui->setupUi(this);
@@ -42,19 +42,22 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 //! Fuegt der linken Liste einen Inhalt ein.
 void MainWindow::fillLeftList()
 {
-    // Header links
-    PersonTreeWidgetItem *header = PersonTreeWidgetItem::headerItem();
-    ui->twLinks->setHeaderItem(header);
     // Header rechts
-    header = new PersonTreeWidgetItem;
+    PersonTreeWidgetItem *header = new PersonTreeWidgetItem;
     header->setText(0, QString("Id"));
     header->setText(1, QString("Auftragsnummer"));
     header->setText(2, QString("V Nummer"));
     ui->twRechts->setHeaderItem(header);
+    // Header links
+    QStringList list = { "Lebensnummer", "Zuname", "Vorname", "Geburtsdatum" };
+    header = PersonTreeWidgetItem::headerItem(list);
+    ui->twLinks->setHeaderItem(header);
 
-    for(const Person &person : personenListe_)
+    TreeWidgetItemFactory::init();
+    PersonTreeWidgetItem::setModel(Person::randomPersonList(20));
+    for(Person &p : PersonTreeWidgetItem::model())
     {
-        PersonTreeWidgetItem *item = new PersonTreeWidgetItem(person);
+        PersonTreeWidgetItem *item = TreeWidgetItemFactory::personItem(header, &p);
         ui->twLinks->addTopLevelItem(item);
     }
 }
@@ -76,7 +79,7 @@ void MainWindow::eintragInRechteListe()
 {
     changeItemSelection();
     int current = ui->twLinks->selectionModel()->currentIndex().row();
-    const Person &p = personenListe_[current];
+    const Person &p = PersonTreeWidgetItem::model()[current];
     QTreeWidgetItem *item = new QTreeWidgetItem;
     item->setData(0, Qt::DisplayRole, p.lebensnummer());
     item->setData(1, Qt::DisplayRole, Person::randomAuftragNummer());
