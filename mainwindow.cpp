@@ -43,10 +43,8 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 void MainWindow::fillLeftList()
 {
     // Header rechts
-    PersonTreeWidgetItem *header = new PersonTreeWidgetItem;
-    header->setText(0, QString("Id"));
-    header->setText(1, QString("Auftragsnummer"));
-    header->setText(2, QString("V Nummer"));
+    QStringList list2 = { "Index", "Auftragsnummer", "eGK" };
+    PersonTreeWidgetItem *header = PersonTreeWidgetItem::headerItem(list2);
     ui->twRechts->setHeaderItem(header);
     // Header links
     QStringList list = { "Lebensnummer", "Zuname", "Vorname", "Geburtsdatum" };
@@ -79,10 +77,8 @@ void MainWindow::eintragInRechteListe()
 {
     changeItemSelection();
     int current = ui->twLinks->selectionModel()->currentIndex().row();
-    const Person &p = PersonTreeWidgetItem::model()[current];
-    QTreeWidgetItem *item = new QTreeWidgetItem;
-    item->setData(0, Qt::DisplayRole, p.lebensnummer());
-    item->setData(1, Qt::DisplayRole, Person::randomAuftragNummer());
-    item->setData(2, Qt::DisplayRole, Person::RandomEgkNummer());
+    Person &p = PersonTreeWidgetItem::model()[current];
+    QTreeWidgetItem *header = ui->twRechts->headerItem();
+    PersonTreeWidgetItem *item = TreeWidgetItemFactory::personItem(header, &p);
     ui->twRechts->addTopLevelItem(item);
 }
